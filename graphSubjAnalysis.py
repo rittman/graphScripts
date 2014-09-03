@@ -5,49 +5,56 @@ Created on Sun Dec 23 00:18:58 2012
 @author: tim
 """
 
-from maybrain import mayBrainTools as mbt
-from maybrain import mayBrainExtraFns as extras
-import bct
+from maybrain import mayBrainTools as mbt # main maybrain package
+from maybrain import mayBrainExtraFns as extras # functions to write results and other bits
+import bct # used to integrate pythonic brain connectivity toolbox
 import numpy as np
 import community
 #from cocotools import infomap
 from os import remove
 from metrics import metrics
 
-edgePCCons = [v for v in range(1,11)]
+edgePCCons = [v for v in range(1,11)] # threholds 1 to 10%
 excludedNodes = [28, 303, 355, 339, 131, 250, 491, 205, 423, 140, 434, 142, 235,
+                 244, 493, 21, 26, 232, 76, 234, 422] # nodes with insufficient coverage
+
+dVal = "2"  # wavelet level (only for use in filename below)
+adjMatFile = "wave_cor_mat_level_"+dVal+"d_500.txt" # input association matrix file
                  244, 493, 21, 26, 232, 76, 234, 422]
 nP = "500"
-parcelFile = "parcel_"+nP+".txt"
-thresholdtype = "local"
-dVal = "2"
-adjMatFile = "wave_cor_mat_level_"+dVal+"d_"+nP+".txt" # "mean_2d_"+nP+".txt"
+parcelFile = "parcel_"+nP+".txt"  spatial information in 4 columns: node, x, y, z
+thresholdtype = "local" # applies local thresholding using MST
+
 delim=" "
 
+# create brain object
 a = mbt.brainObj()
 appVal = False
 appValT = False
 
 # unweighted measures
+# iterate through thresholds
 for e in edgePCCons:
     ofb = '_'.join(["brain", thresholdtype, str(e), "d"+dVal+"_"])
-    propDict = {"edgePC":str(e)}
+    propDict = {"edgePC":str(e)} # added properties for results files
 
     a.importAdjFile(adjMatFile, delimiter=delim, excludedNodes=excludedNodes)
-    a.localThresholding(edgePC=e)
+    a.localThresholding(edgePC=e)  # apply a threshold
+    a.removeUnconnectedNodes()     # remove unconnected nodes
     
     degs = a.G.degree(weight='weight')
     extras.writeResults(degs, "degreeWt", ofb, append=appVal)
 
-    a.binarise()
+    a.binarise()  # binarise the graph
     a.importSpatialInfo(parcelFile)  # read spatial information
-    a.weightToDistance()
-    ofbT = '_'.join(["brain", thresholdtype, str(e), "d"+dVal+"_"])
-    a.makebctmat()    
+    a.weightToDistance() # convert weights to distance (for closeness centrality function)
+    a.makebctmat() # create an array to be used by the brain connectivity toolbox functions
+    
+    ofbT = '_'.join(["brain", thresholdtype, str(e), "d"+dVal+"_"])  
    
     #### small worldness metrics ####
-    degs = mbt.nx.degree(a.G)
-    extras.writeResults(degs, "degree", ofb, propDict=propDict, append=appVal)
+    degs = mbt.nx.degree(a.G)  # measure degree
+    extras.writeResults(degs, "degree", ofb, propDict=propDict, append=appVal)  # write the results to a file
         
     clustCoeff = mbt.nx.average_clustering(a.G)
     extras.writeResults(clustCoeff, "clusterCoeff", ofb, propDict=propDict, append=appVal)
@@ -76,7 +83,10 @@ for e in edgePCCons:
 #    extras.writeResults(hs, "hs", ofb, propDict=propDict, append=appVal)
 #    del(hs, betCent, closeCent, degs)
      
-    eigCent = mbt.nx.centrality.eigenvector_centrality_numpy(a.G)
+    try:
+        eigCent = mbt.nx.centrality.eigenvector_centrality_numpy(a.G)
+    except:
+        eigCent = dict(zip(a.G.nodes(), ['NA' for n in a.G.nodes()]))
     extras.writeResults(eigCent, "eigCentNP", ofb, propDict=propDict, append=appVal)
     del(eigCent)
     
@@ -122,6 +132,8 @@ for e in edgePCCons:
     rbt = a.robustness()
     extras.writeResults(rbt, "robustness", ofb, propDict=propDict, append=False)
 
+    # append any further iterations
+    appVal = True
 #    # infomap partitioning
 #    bIM = infomap.nx2infomap(a.G)
 #    del(bIM)
@@ -259,6 +271,7 @@ nM = np.zeros((10))
 wmd = np.zeros((len(a.G.nodes()), 10))
 Q = np.zeros((10))
 
+appValT=False
 
 #pcCentIM = np.zeros((len(a.G.nodes()), 10))
 #nMIM = np.zeros((10))
