@@ -12,6 +12,7 @@ import numpy as np
 import community
 #from cocotools import infomap
 from os import remove
+from metrics import metrics
 
 edgePCCons = [v for v in range(1,11)]
 excludedNodes = [28, 303, 355, 339, 131, 250, 491, 205, 423, 140, 434, 142, 235,

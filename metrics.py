@@ -66,6 +66,77 @@ def metrics(a,
 #        pcCentWt = a.assignbctResult(pcCentWt)
 #        extras.writeResults(pcCentWt, "pcCentWt", ofb, propDict=propDict, append=appValT)
 #        
+#        # infomap partitioning
+#        bIM = infomap.nx2infomap(a.G)
+#        del(bIM)
+#        try:
+#            f = open("nxdigraph.clu", "r") # recapture results from output file
+#            modules = mbt.np.array([int(v.strip('\n')) for v in f.readlines()[1:]])
+#            f.close()
+#            remove("nxdigraph.clu")
+#    
+#            ciNIM = a.assignbctResult(modules)
+#            QIM = community.modularity(ciNIM, a.G)            
+#            
+#            pcCentIM = bct.participation_coef_sign(a.bctmat, modules)
+#            pcCentIM = a.assignbctResult(pcCentIM)
+#            wmdIM = extras.withinModuleDegree(a.G, ciNIM, weight='weight')
+#            nMIM = len(np.unique(ciNIM[0]))
+#        
+#        except:
+#            modules = np.array((np.repeat(np.nan, len(a.G.nodes()))))
+#            QIM = "NA"
+#            pcCentIM = {v:"NA" for v in a.G.nodes()}
+#            wmdIM = {v:"NA" for v in a.G.nodes()}
+#            ciNIM = {v:"NA" for v in a.G.nodes()}
+#            nMIM = 0
+#    
+#        extras.writeResults(QIM, "QIM", ofbT, propDict=propDict, append=appValT)
+#        extras.writeResults(ciNIM, "ciIM", ofbT, propDict=propDict, append=appValT)
+#        del QIM
+#        
+#        extras.writeResults(nMIM, "nMIM", ofbT, propDict=propDict, append=appValT)
+#        del nMIM
+#        
+#        extras.writeResults(pcCentIM, "pcCentIM", ofbT, propDict=propDict, append=appValT)
+#        del pcCentIM
+#    
+#        extras.writeResults(wmdIM, "wmdIM", ofbT, propDict=propDict, append=appValT)
+#        del(wmdIM, ciNIM)
+#
+#
+#        # infomap partitioning
+#        bIM = infomap.nx2infomap(a.G)
+#        del(bIM)
+#        f = open("nxdigraph.clu", "r") # recapture results from output file
+#        modules = mbt.np.array([int(v.strip('\n')) for v in f.readlines()[1:]])
+#        f.close()
+#        remove("nxdigraph.clu")
+#        
+#        ciNIM = a.assignbctResult(modules)
+#        QIMWt = community.modularity(ciNIM, a.G)
+#        QIM[n] = QIMWt
+#        extras.writeResults(QIMWt, "QIMWt", ofbT, propDict=propDict,append=appValT)
+#        extras.writeResults(ciNIM, "ciIMWt", ofbT, propDict=propDict, append=appValT)
+#        del(QIMWt)
+#        
+#        nMIMWt = len(np.unique(modules))
+#        nMIM[n] = nMIMWt
+#        extras.writeResults(nMIMWt, "nMIMWt", ofbT, propDict=propDict, append=appValT)
+#        del(nMIMWt)
+#        
+#        pcCentIMWt = bct.participation_coef_sign(a.bctmat, modules)
+#        pcCentIM[:,n] = pcCentIMWt
+#        pcCentIMWt = a.assignbctResult(pcCentIMWt)
+#        extras.writeResults(pcCentIMWt, "pcCentIMWt", ofbT, propDict=propDict, append=appValT)
+#        del(pcCentIMWt)
+#        
+#        wmdIMWt = extras.withinModuleDegree(a.G, ciNIM, weight='weight')
+#        wmdIM[:,n] = [wmdIMWt[v] for v in a.G.nodes()]
+#        extras.writeResults(wmdIMWt, "wmdIMWt", ofbT, propDict=propDict, append=appValT)
+#        del wmdIMWt
+
+
 #        # Newman partitioning
 #        ciNm = bct.modularity_und(a.bctmat)
 #        QNmWt = ciNm[1]
@@ -187,6 +258,44 @@ def metrics(a,
 #        extras.writeResults(rbt, "robustness", ofb, propDict=propDict,
 #                            append=appVal)
 #
+#        # infomap partitioning
+#        bIM = infomap.nx2infomap(a.G)
+#        del(bIM)
+#        try:
+#            f = open("nxdigraph.clu", "r") # recapture results from output file
+#            modules = mbt.np.array([int(v.strip('\n')) for v in f.readlines()[1:]])
+#            f.close()
+#            remove("nxdigraph.clu")
+#    
+#            ciNIM = a.assignbctResult(modules)
+#            QIM = community.modularity(ciNIM, a.G)            
+#            
+#            pcCentIM = bct.participation_coef_sign(a.bctmat, modules)
+#            pcCentIM = a.assignbctResult(pcCentIM)
+#            wmdIM = extras.withinModuleDegree(a.G, ciNIM, weight='weight')
+#            nMIM = len(np.unique(ciNIM[0]))
+#        
+#        except:
+#            modules = np.array((np.repeat(np.nan, len(a.G.nodes()))))
+#            QIM = "NA"
+#            pcCentIM = {v:"NA" for v in a.G.nodes()}
+#            wmdIM = {v:"NA" for v in a.G.nodes()}
+#            ciNIM = {v:"NA" for v in a.G.nodes()}
+#            nMIM = 0
+#        
+#        extras.writeResults(QIM, "QIM", ofbT, propDict=propDict, append=appValT)
+#        extras.writeResults(ciNIM, "ciIM", ofbT, propDict=propDict, append=appValT)
+#        del QIM
+#        
+#        extras.writeResults(nMIM, "nMIM", ofbT, propDict=propDict, append=appValT)
+#        del nMIM
+#        
+#        extras.writeResults(pcCentIM, "pcCentIM", ofbT, propDict=propDict, append=appValT)
+#        del pcCentIM
+#    
+#        extras.writeResults(wmdIM, "wmdIM", ofbT, propDict=propDict, append=appValT)
+#        del(wmdIM, ciNIM)
+#
 #        # Newman partitioning
 #        ciNm = bct.modularity_und(a.bctmat)
 #        QNm= ciNm[1]
@@ -264,6 +373,24 @@ def metrics(a,
 #    extras.writeResults(wmd, "wmdWt_wt", ofb, propDict=propDict, append=appValW)
 #    del(wmd)
 #    
+#
+#    # Infomap
+#    QIM = np.mean(QIM)
+#    extras.writeResults(QIM, "QIMWt_wt", ofb, append=appVal)
+#    del(QIM)
+#    
+#    pcCentIM = a.assignbctResult(np.mean(pcCentIM, axis=1))
+#    extras.writeResults(pcCentIM, "pcCentIMWt_wt", ofb, append=appVal)
+#    del(pcCentIM)
+#     
+#    wmdIM = a.assignbctResult(np.mean(wmdIM, axis=1))
+#    extras.writeResults(wmdIM, "wmdIMWt_wt", ofb, append=appVal)
+#    del(wmdIM)
+#    
+#    nMIM = np.mean(nMIM)
+#    extras.writeResults(nMIM, "nMIMWt_wt", ofb, append=appVal)
+#    del(nMIM)
+#
 #    # Newman
 #    QNm = mbt.np.mean(QNm)
 #    extras.writeResults(QNm, "QNmWt_wt", ofb, append=appValW)
