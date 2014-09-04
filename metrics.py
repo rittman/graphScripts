@@ -4,9 +4,9 @@ import bct
 
 def metrics(a,
             appVal,
-            degenName,
-            pcLoss,
-            edgePCCons = [v*0.01 for v in range(1,11)],
+            degenName="NoModel",
+            pcLoss="0",
+            edgePCCons = [v for v in range(1,11)],
             dVal = "2",
             thresholdtype = "local"
             ):
@@ -16,7 +16,7 @@ def metrics(a,
 
 #    # prepare matrices for weighted measures
 #    pcCent = mbt.np.zeros((len(a.G.nodes()), 10))
-    betCentT = mbt.np.zeros((len(a.G.nodes()), 10))
+#    betCentT = mbt.np.zeros((len(a.G.nodes()), 10))
 #    nM = mbt.np.zeros((10))
 #    wmd = mbt.np.zeros((len(a.G.nodes()), 10))
     
@@ -31,6 +31,7 @@ def metrics(a,
         ofb = '_'.join(["brain", degenName, thresholdtype, str(e), "d"+dVal+"_"])
 
         a.localThresholding(edgePC=e)
+        
         a.makebctmat()
         a.weightToDistance()
 
@@ -41,8 +42,8 @@ def metrics(a,
                             append=appVal)
 
 	# weighted betweenness centrality
-        bcT = mbt.centrality.betweenness_centrality(a.G, weight='distance')    
-        betCentT[:,n] = [bcT[v] for v in a.G.nodes()]
+#        bcT = mbt.centrality.betweenness_centrality(a.G, weight='distance')    
+#        betCentT[:,n] = [bcT[v] for v in a.G.nodes()]
 
 #        # weighted modularity metrics
 #        ci = bct.modularity_louvain_und_sign(a.bctmat)
@@ -173,59 +174,59 @@ def metrics(a,
         extras.writeResults(degs, "degree", ofb, propDict=propDict,
                             append=appVal)
         
-        clustCoeff = mbt.nx.average_clustering(a.G)
-        extras.writeResults(clustCoeff, "clusterCoeff", ofb, propDict=propDict,
-                            append=appVal)
-        del(clustCoeff)
-        
-        pl = mbt.nx.average_shortest_path_length(a.G)
-        extras.writeResults(pl, "pl", ofb, propDict=propDict, append=appVal)
-        del(pl)
-        
-        ge = extras.globalefficiency(a.G)
-        extras.writeResults(ge, "ge", ofb, propDict=propDict, append=appVal)
-        del(ge)
-        
-        le = extras.localefficiency(a.G)
-        extras.writeResults(le, "le", ofb, propDict=propDict, append=appVal)
-        del(le)
-    
-        # hub metrics
-        betCent = mbt.centrality.betweenness_centrality(a.G)
-        extras.writeResults(betCent, "betCent", ofb, propDict=propDict,
-                            append=appVal)
-        
-        closeCent = mbt.centrality.closeness_centrality(a.G)
-        extras.writeResults(closeCent, "closeCent", ofb, propDict=propDict,
-                            append=appVal)
-         
-        hs = extras.hubscore(a.G, bc=betCent, cc=closeCent, degs=degs,
-                             weighted=False)
-        extras.writeResults(hs, "hs", ofb, propDict=propDict, append=appVal)
-        del(hs, betCent, closeCent, degs)
-         
-        try:
-            eigCent = mbt.centrality.eigenvector_centrality_numpy(a.G)
-        except:
-            eigCent = dict(zip(a.G.nodes(), ['NA' for n in a.G.nodes()]))
-        extras.writeResults(eigCent, "eigCentNP", ofb, propDict=propDict,
-                            append=appVal)
-        del(eigCent)
-        
-        eln = extras.edgeLengths(a.G, nodeWise=True)
-        extras.writeResults(eln, "eln", ofb, propDict=propDict, append=appVal)
-        del(eln)
-        
-        el = extras.edgeLengths(a.G)
-        meanEL = mbt.np.mean(mbt.np.array((el.values()), dtype=float))
-        extras.writeResults(meanEL, "meanEL", ofb, propDict=propDict,
-                            append=appVal)
-    
-        medianEL = mbt.np.median(mbt.np.array((el.values()), dtype=float))
-        extras.writeResults(medianEL, "medianEL", ofb, propDict=propDict,
-                            append=appVal)
-    
-        del(el, meanEL, medianEL)
+#        clustCoeff = mbt.nx.average_clustering(a.G)
+#        extras.writeResults(clustCoeff, "clusterCoeff", ofb, propDict=propDict,
+#                            append=appVal)
+#        del(clustCoeff)
+#        
+#        pl = mbt.nx.average_shortest_path_length(a.G)
+#        extras.writeResults(pl, "pl", ofb, propDict=propDict, append=appVal)
+#        del(pl)
+#        
+#        ge = extras.globalefficiency(a.G)
+#        extras.writeResults(ge, "ge", ofb, propDict=propDict, append=appVal)
+#        del(ge)
+#        
+#        le = extras.localefficiency(a.G)
+#        extras.writeResults(le, "le", ofb, propDict=propDict, append=appVal)
+#        del(le)
+#    
+#        # hub metrics
+#        betCent = mbt.centrality.betweenness_centrality(a.G)
+#        extras.writeResults(betCent, "betCent", ofb, propDict=propDict,
+#                            append=appVal)
+#        
+#        closeCent = mbt.centrality.closeness_centrality(a.G)
+#        extras.writeResults(closeCent, "closeCent", ofb, propDict=propDict,
+#                            append=appVal)
+#         
+#        hs = extras.hubscore(a.G, bc=betCent, cc=closeCent, degs=degs,
+#                             weighted=False)
+#        extras.writeResults(hs, "hs", ofb, propDict=propDict, append=appVal)
+#        del(hs, betCent, closeCent, degs)
+#         
+#        try:
+#            eigCent = mbt.centrality.eigenvector_centrality_numpy(a.G)
+#        except:
+#            eigCent = dict(zip(a.G.nodes(), ['NA' for n in a.G.nodes()]))
+#        extras.writeResults(eigCent, "eigCentNP", ofb, propDict=propDict,
+#                            append=appVal)
+#        del(eigCent)
+#        
+#        eln = extras.edgeLengths(a.G, nodeWise=True)
+#        extras.writeResults(eln, "eln", ofb, propDict=propDict, append=appVal)
+#        del(eln)
+#        
+#        el = extras.edgeLengths(a.G)
+#        meanEL = mbt.np.mean(mbt.np.array((el.values()), dtype=float))
+#        extras.writeResults(meanEL, "meanEL", ofb, propDict=propDict,
+#                            append=appVal)
+#    
+#        medianEL = mbt.np.median(mbt.np.array((el.values()), dtype=float))
+#        extras.writeResults(medianEL, "medianEL", ofb, propDict=propDict,
+#                            append=appVal)
+#    
+#        del(el, meanEL, medianEL)
         
 #        # modularity metrics
 #        ci = bct.modularity_louvain_und(a.bctmat)
@@ -320,26 +321,26 @@ def metrics(a,
         # append any further iterations
         appVal = True
     
-    propDict = {"pcLoss":pcLoss}
-    # weighted measures
-    a.adjMatThresholding(MST=False)
-    a.weightToDistance()
-    ofb = '_'.join(["brain", degenName, "d"+dVal+"_"])
-    a.makebctmat()
-    
-    # weighted hub metrics
-    degs = a.G.degree(weight='weight')
-    extras.writeResults(degs, "degree_wt", ofb, propDict=propDict, append=appValW)
-    
-    betCent = mbt.centrality.betweenness_centrality(a.G, weight='distance')
-    extras.writeResults(betCent, "betCent_wt", ofb, propDict=propDict, append=appValW)
-    
-    closeCent = mbt.centrality.closeness_centrality(a.G, distance='distance')
-    extras.writeResults(closeCent, "closeCent_wt", ofb, propDict=propDict, append=appValW)
-    
-    eigCent = mbt.centrality.eigenvector_centrality_numpy(a.G)
-    extras.writeResults(eigCent, "eigCentNP_wt", ofb, propDict=propDict, append=appValW)
-    del(eigCent)
+#    propDict = {"pcLoss":pcLoss}
+#    # weighted measures
+#    a.adjMatThresholding(MST=False)
+#    a.weightToDistance()
+#    ofb = '_'.join(["brain", degenName, "d"+dVal+"_"])
+#    a.makebctmat()
+#    
+#    # weighted hub metrics
+#    degs = a.G.degree(weight='weight')
+#    extras.writeResults(degs, "degree_wt", ofb, propDict=propDict, append=appValW)
+#    
+#    betCent = mbt.centrality.betweenness_centrality(a.G, weight='distance')
+#    extras.writeResults(betCent, "betCent_wt", ofb, propDict=propDict, append=appValW)
+#    
+#    closeCent = mbt.centrality.closeness_centrality(a.G, distance='distance')
+#    extras.writeResults(closeCent, "closeCent_wt", ofb, propDict=propDict, append=appValW)
+#    
+#    eigCent = mbt.centrality.eigenvector_centrality_numpy(a.G)
+#    extras.writeResults(eigCent, "eigCentNP_wt", ofb, propDict=propDict, append=appValW)
+#    del(eigCent)
     
 #    # weighted modularity metrics
 #    ci = bct.modularity_louvain_und_sign(a.bctmat)
@@ -362,8 +363,8 @@ def metrics(a,
 #    extras.writeResults(pcCent, "pcCentWt_wt", ofb, propDict=propDict, append=appValW)
 #    del(pcCent,ci)
 #    
-    betCentT = a.assignbctResult(mbt.np.mean(betCentT, axis=1))
-    extras.writeResults(betCentT, "betCentWtT_wt", ofb, propDict=propDict, append=appValW)
+#    betCentT = a.assignbctResult(mbt.np.mean(betCentT, axis=1))
+#    extras.writeResults(betCentT, "betCentWtT_wt", ofb, propDict=propDict, append=appValW)
 #    
 #    nM = mbt.np.mean(nM)
 #    extras.writeResults(nM, "nMWt_wt", ofb, propDict=propDict, append=appValW)
@@ -407,4 +408,4 @@ def metrics(a,
 #    nMNm = mbt.np.mean(nMNm)
 #    extras.writeResults(nMNm, "nMNmWt_wt", ofb, append=appValW)
 #    del(nMNm)
-    a.adjMatThresholding(MST=False)
+    a.applyThreshold()
