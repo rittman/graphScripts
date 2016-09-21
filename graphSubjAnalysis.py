@@ -12,15 +12,12 @@ import numpy as np
 import community
 #from cocotools import infomap
 from os import remove
-from metrics import metrics
 
 edgePCCons = [v for v in range(1,11)] # threholds 1 to 10%
-excludedNodes = [28, 303, 355, 339, 131, 250, 491, 205, 423, 140, 434, 142, 235,
-                 244, 493, 21, 26, 232, 76, 234, 422] # nodes with insufficient coverage
 
 dVal = "2"  # wavelet level (only for use in filename below)
 adjMatFile = "wave_cor_mat_level_"+dVal+"d_500.txt" # input association matrix file
-                 244, 493, 21, 26, 232, 76, 234, 422]
+
 nP = "500"
 parcelFile = "parcel_"+nP+".txt"  spatial information in 4 columns: node, x, y, z
 thresholdtype = "local" # applies local thresholding using MST
@@ -38,7 +35,7 @@ for e in edgePCCons:
     ofb = '_'.join(["brain", thresholdtype, str(e), "d"+dVal+"_"])
     propDict = {"edgePC":str(e)} # added properties for results files
 
-    a.importAdjFile(adjMatFile, delimiter=delim, excludedNodes=excludedNodes)
+    a.importAdjFile(adjMatFile, delimiter=delim)
     a.localThresholding(edgePC=e)  # apply a threshold
     a.removeUnconnectedNodes()     # remove unconnected nodes
     
@@ -205,7 +202,7 @@ for e in edgePCCons:
 #    del(wmdNm,ciNNm,ciNm)
 
 # weighted measures
-a.importAdjFile(adjMatFile, delimiter=delim, excludedNodes=excludedNodes)
+a.importAdjFile(adjMatFile, delimiter=delim)
 a.applyThreshold()
 a.removeUnconnectedNodes()
 
